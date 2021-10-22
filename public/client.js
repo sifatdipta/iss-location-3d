@@ -10,10 +10,11 @@ const canvas = document.querySelector("#app");
 
 const updateSatAPI = 1000; // How often to update location in MS
 let zoomIntoStation = false;
+let cameraZ;
 
 // Moon Variables
 let theta = 0;
-let dTheta = 2 * Math.PI / 2000;
+let dTheta = 2 * Math.PI / 5000;
 
 // Station Variables
 let sLat = 0;
@@ -27,7 +28,7 @@ const fov = 30; // Field Of View In Degree
 const aspect = window.innerWidth / window.innerHeight; // Getting Windows Aspect Ratio
 
 //Object Has To Be Within These Range
-const near = 0.1;
+const near = 0.005;
 const far = 1000;
 
 camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -48,10 +49,11 @@ renderer.setClearColor(0x000000, 0.0);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minPolarAngle = Math.PI/2;
 controls.maxPolarAngle = Math.PI/2;
-// controls.minDistance = 2.5;
-// controls.maxDistance = 4;
+controls.minDistance = 2.5;
+controls.maxDistance = 4;
 controls.enablePan = false;
 //controls.enableZoom = false;
+controls.rotateSpeed = 1;
 
 camera.position.x = 1;
 camera.position.z = 4;
@@ -111,9 +113,6 @@ let spaceStationObject;
 
 loader.load("models/ISS_stationary.glb", (gltf) => {
     spaceStationObject = gltf.scene;
-    const pointLight2 = new THREE.PointLight(0xffffff, 0.5, 1);
-    gltf.scene.add(pointLight2);
-    pointLight2.position.set(gltf.scene.position);
 
     gltf.scene.scale.set(0.0005,0.0005,0.0005);
     gltf.scene.position.y = 0.7;
@@ -160,13 +159,13 @@ const animate = () => {
         const satLatLonPoint = calcPosFromLatLonRad(sLat, sLon, 0.7);
         const newPosition = new THREE.Vector3(satLatLonPoint[0], satLatLonPoint[1], satLatLonPoint[2]);
         spaceStationObject.position.lerp(newPosition, 0.1);
-        console.log(spaceStationObject.position);
         spaceStationObject.rotation.y += 0.002;
     }
 
     if(zoomIntoStation === true) {
         camera.lookAt(spaceStationObject.position);
-        camera.position.set(spaceStationObject.position.x, spaceStationObject.position.y, spaceStationObject.position.z - 0.15);
+        camera.position.set(spaceStationObject.position.x - 0.1, spaceStationObject.position.y, spaceStationObject.position.z - 0.2);
+        pointLight.position.copy(camera.position);
     } else {
         // Controller Movement Update
         controls.update();
@@ -233,12 +232,19 @@ function getSatLongLat () {
 
 document.addEventListener('keyup', event => {
     if (event.code === 'Space') {
-        if(zoomIntoStation) {
+        if(zoomIntoStation) { // TURNING ZOOM IN TO SATELITE OFF
             zoomIntoStation = false;
             controls.enabled = true;
-        } else {
+            camera.position.z = cameraZ;
+            controls.minDistance = 2.5;
+            controls.maxDistance = 4;
+            pointLight.position.set(5, 3, 5);
+        } else { // TURNING ZOOM IN ON
             zoomIntoStation = true;
             controls.enabled = false;
+            cameraZ = camera.position.z;
+            controls.minDistance = 1;
+            controls.maxDistance = 7;
         }
     }
 })
