@@ -15,18 +15,44 @@
     <div class="container">
         <canvas id="app"></canvas>
         <div class="overlay" style="pointer-events: none">
-            <section class="page">
+            <section id="page1" class="page">
                 <div class="page__left">
                     <h1 class="page__title">International Space Station</h1>
-                    <h3 class="page__date">Current Date and Time</h3>
+                    <h2 id="time" class="page__date">Current Date and Time</h2>
                 </div>
                 <div class="page__right">
-                    <h2 class="page__location page__loc-text">Country: Placeholder</h2>
+                    <h2 id="country" class="page__location page__loc-text">Country: Placeholder</h2>
                     <h2 id="lat" class="page__coordinates page__loc-text">Latitude: ##.#####</h2>
                     <h2 id="lon" class="page__coordinates page__loc-text">Longitude: ##.#####</h2>
                     <a class="btn" target="_blank" style="pointer-events: auto" href="https://www.nasa.gov/mission_pages/station/main/index.html">Learn more about the I.S.S. ➔</a>
                 </div>
             </section>
+            <section id="page2" class="page">
+                <div class="page__left">
+                    <p class="page__paragraph">What is the International Space Station?
+                        The International Space Station (ISS) is a large spacecraft in orbit around Earth. It serves as a home where international crews of astronauts and cosmonauts live and has been continuously occupied since November 2000.
+                        <br><br><a style="pointer-events: auto" target="_blank" href="https://www.nasa.gov/mission_pages/station/expeditions/index.html">Read more about who is currently on station</a></p>
+                        
+                        <br>
+
+                        <p class="page__paragraph">The space station is also a unique science laboratory. During the past two decades, the space station has supported numerous discoveries, scientific publications, unique opportunities, and historic breakthroughs.
+                        <br><br><a style="pointer-events: auto" target="_blank" href="https://www.nasa.gov/mission_pages/station/research/overview.html">Read more about the research being done on station</a></p>
+                </div>
+                <div class="page__right">
+                    <h3>ISS Fun Facts</h3>
+                    <ul class="page__funfacts">
+                        <li class="page__funfacts-item">The space station is 356 feet (109 meters) end-to-end, one yard shy of the full length of an American football field including the end zones.</li>
+                        <li class="page__funfacts-item">When fully complete, the ISS will weigh about 420,000 kilograms (925,000 pounds). This is equivalent to more than 330 automobiles.</li>
+                        <li class="page__funfacts-item">The living and working space in the station is larger than a six-bedroom house (and has six sleeping quarters, two bathrooms, a gym, and a 360-degree view bay window).</li>
+                        <li class="page__funfacts-item">Eight miles of wire connects the electrical power system aboard the space station.</li>
+                        <li class="page__funfacts-item">In the International Space Station’s U.S. segment alone, more than 1.5 million lines of flight software code run on 44 computers communicating via 100 data networks transferring 400,000 signals (e.g. pressure or temperature measurements, valve positions, etc.).</li>
+                        <li class="page__funfacts-item">The ISS travels at a speed of five miles per second, orbiting Earth about every 90 minutes. In 24 hours, the space station makes 16 orbits of Earth, traveling through 16 sunrises and sunsets.</li>
+                    </ul>
+                </div>
+            </section>
+            <div class="info">
+                <p class="info__text">• Press Space To Toggle View</p>
+            </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>

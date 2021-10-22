@@ -56,7 +56,7 @@ controls.enablePan = false;
 controls.rotateSpeed = 1;
 
 camera.position.x = 1;
-camera.position.z = 4;
+camera.position.z = 3;
 controls.update();
 
 // ================ SETUP EARTH
@@ -151,8 +151,8 @@ const animate = () => {
 
     // Rotate Moon Around Earth
     theta += dTheta;
-    moonMesh.position.x = 1.3 * Math.cos(theta);
-    moonMesh.position.z = 1.3 * Math.sin(theta);
+    moonMesh.position.x = 1.1 * Math.cos(theta);
+    moonMesh.position.z = 1.1 * Math.sin(theta);
 
     // Rotating The Station Around Earth
     if(spaceStationObject != null) {
@@ -162,6 +162,7 @@ const animate = () => {
         spaceStationObject.rotation.y += 0.002;
     }
 
+    //Zoom Into Station Control
     if(zoomIntoStation === true) {
         camera.lookAt(spaceStationObject.position);
         camera.position.set(spaceStationObject.position.x - 0.1, spaceStationObject.position.y, spaceStationObject.position.z - 0.2);
@@ -171,8 +172,9 @@ const animate = () => {
         controls.update();
     }
 
-    // Update Light By Camera Control
-    //pointLight.position.copy(camera.position);
+    //Update Time
+    const timeEl = document.querySelector("#time");
+    timeEl.innerText= displayDate();
 
     render();
 }
@@ -191,6 +193,7 @@ function handleAPIData() {
 
 animate(); // Animates & Renders
 getSatLongLat();
+//getCountryFromLatLon();
 
 // =========================================
 // ============== FUNCTIONS
@@ -215,6 +218,7 @@ function addHomePoint(latlons){
 
     const pointMaterial = new THREE.MeshPhongMaterial({
         //map: THREE.ImageUtils.loadTexture('textures/earthmap4k.jpg')
+        color: 0xFF2D00
     });
 
     const pointMesh = new THREE.Mesh(pointGeometry, pointMaterial);
@@ -235,6 +239,26 @@ function getSatLongLat () {
             console.log(error);
         })
     }, updateSatAPI);
+}
+
+// Gets Country From Lat Long
+function getCountryFromLatLon (lat, lon) {
+    var timer = setInterval(() => {
+        axios
+        .get('https://geocode.xyz/' + lat + ',' + lon + '?json=1&auth=106583156098176e15920809x109316')
+        .then((result)=>{
+            const countryEl = document.querySelector("#country");
+            if(!result.data.country) {
+                countryEl.innerText= "Region: Ocean Surface";
+            } else {
+                countryEl.innerText= "Region " + result.data.country;
+            }
+        })
+
+        .catch((error) => {
+            console.log(error);
+        });
+    }, 3000)
 }
 
 // Gets User Ip -> Returns Lat Long
@@ -264,12 +288,24 @@ document.addEventListener('keyup', event => {
             controls.minDistance = 2.5;
             controls.maxDistance = 4;
             pointLight.position.set(5, 3, 5);
+
+            const page1El = document.querySelector("#page1");
+            const page2E2 = document.querySelector("#page2");
+
+            page1El.style.display = "flex";
+            page2E2.style.display = "none";
         } else { // TURNING ZOOM IN ON
             zoomIntoStation = true;
             controls.enabled = false;
             cameraZ = camera.position.z;
             controls.minDistance = 1;
             controls.maxDistance = 7;
+
+            const page1El = document.querySelector("#page1");
+            const page2E2 = document.querySelector("#page2");
+
+            page1El.style.display = "none";
+            page2E2.style.display = "flex";
         }
     }
 })
