@@ -187,7 +187,6 @@ const render = () => {
 returnUserLatLon();
 
 function handleAPIData() {
-    console.log(userLatLon);
     addHomePoint(userLatLon); // Adding Visitors Location
 }
 
@@ -278,7 +277,9 @@ function returnUserLatLon(){
     });
 }
 
-// Event Listener
+// ============== EVENT LISTENERS
+
+// Space Key Functions
 document.addEventListener('keyup', event => {
     if (event.code === 'Space') {
         if(zoomIntoStation) { // TURNING ZOOM IN TO SATELITE OFF

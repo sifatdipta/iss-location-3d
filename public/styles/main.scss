@@ -68,6 +68,10 @@ body {
         padding: 14px 0;
     }
 
+    &__location {
+        font-size: 16px;
+    }
+
     &__text {
         font-size: 24px;
     }
@@ -95,6 +99,7 @@ body {
     position: relative;
     
     &__text {
+        color: #c4c4c4;
         position: absolute;
         width: 300px;
         top: 250px;

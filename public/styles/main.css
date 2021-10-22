@@ -93,6 +93,10 @@ body {
   padding: 14px 0;
 }
 
+.page__location {
+  font-size: 16px;
+}
+
 .page__text {
   font-size: 24px;
 }
@@ -120,6 +124,7 @@ body {
 }
 
 .info__text {
+  color: #c4c4c4;
   position: absolute;
   width: 300px;
   top: 250px;
