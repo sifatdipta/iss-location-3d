@@ -8,7 +8,8 @@ let camera;
 let renderer;
 const canvas = document.querySelector("#app");
 
-const updateSatAPI = 6000; // How often to update location in MS
+const updateSatAPI = 1000; // How often to update location in MS
+let zoomIntoStation = false;
 
 // Moon Variables
 let theta = 0;
@@ -47,8 +48,8 @@ renderer.setClearColor(0x000000, 0.0);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.minPolarAngle = Math.PI/2;
 controls.maxPolarAngle = Math.PI/2;
-controls.minDistance = 2.5;
-controls.maxDistance = 5;
+// controls.minDistance = 2.5;
+// controls.maxDistance = 4;
 controls.enablePan = false;
 //controls.enableZoom = false;
 
@@ -110,10 +111,9 @@ let spaceStationObject;
 
 loader.load("models/ISS_stationary.glb", (gltf) => {
     spaceStationObject = gltf.scene;
-    const pointLight2 = new THREE.PointLight(0xffffff, 0.3);
-
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.5, 1);
     gltf.scene.add(pointLight2);
-    pointLight2.position.set(0,0,0);
+    pointLight2.position.set(gltf.scene.position);
 
     gltf.scene.scale.set(0.0005,0.0005,0.0005);
     gltf.scene.position.y = 0.7;
@@ -158,12 +158,19 @@ const animate = () => {
     // Rotating The Station Around Earth
     if(spaceStationObject != null) {
         const satLatLonPoint = calcPosFromLatLonRad(sLat, sLon, 0.7);
-        spaceStationObject.position.set(satLatLonPoint[0], satLatLonPoint[1], satLatLonPoint[2]);
+        const newPosition = new THREE.Vector3(satLatLonPoint[0], satLatLonPoint[1], satLatLonPoint[2]);
+        spaceStationObject.position.lerp(newPosition, 0.1);
+        console.log(spaceStationObject.position);
         spaceStationObject.rotation.y += 0.002;
     }
-    
-    // Controller Movement Update
-    controls.update();
+
+    if(zoomIntoStation === true) {
+        camera.lookAt(spaceStationObject.position);
+        camera.position.set(spaceStationObject.position.x, spaceStationObject.position.y, spaceStationObject.position.z - 0.15);
+    } else {
+        // Controller Movement Update
+        controls.update();
+    }
 
     // Update Light By Camera Control
     //pointLight.position.copy(camera.position);
@@ -201,7 +208,7 @@ function calcPosFromLatLonRad(lat,lon, radius){
 function addHomePoint(latlons){
     const pointGeometry = new THREE.SphereGeometry(0.01, 20, 20);
 
-    const pointMaterial = new THREE.MeshPhongMaterial({ // Setting Up Earth Material
+    const pointMaterial = new THREE.MeshPhongMaterial({
         //map: THREE.ImageUtils.loadTexture('textures/earthmap4k.jpg')
     });
 
@@ -226,6 +233,12 @@ function getSatLongLat () {
 
 document.addEventListener('keyup', event => {
     if (event.code === 'Space') {
-        //camera.lookAt(spaceStationObject.position.x + 1, spaceStationObject.position.z, spaceStationObject.position.y);
+        if(zoomIntoStation) {
+            zoomIntoStation = false;
+            controls.enabled = true;
+        } else {
+            zoomIntoStation = true;
+            controls.enabled = false;
+        }
     }
 })
