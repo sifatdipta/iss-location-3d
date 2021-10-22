@@ -129,7 +129,9 @@ const render = () => {
 
 animate(); // Animates & Renders
 
-// TEST 
+// =========================================
+// ============== FUNCTIONS
+// =========================================
 
 function calcPosFromLatLonRad(lat,lon, radius){
   
@@ -141,5 +143,4 @@ function calcPosFromLatLonRad(lat,lon, radius){
     y = (radius * Math.cos(phi));
   
     return [x,y,z];
-
 }
