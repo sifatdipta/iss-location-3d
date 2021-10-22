@@ -1,4 +1,6 @@
 body {
   margin: 0;
+  overflow: hidden;
+  /* Hide scrollbars */
 }
 /*# sourceMappingURL=main.css.map */

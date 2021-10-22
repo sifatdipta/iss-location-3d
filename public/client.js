@@ -1,6 +1,6 @@
 import * as THREE from '/build/three.module.js';
-import { OrbitControls } from "https://threejsfundamentals.org/threejs/resources/threejs/r122/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from 'https://threejs.org/examples/jsm/loaders/GLTFLoader.js';
 
 // ================ GLOBAL VARIABLES
 let scene;
@@ -8,15 +8,21 @@ let camera;
 let renderer;
 const canvas = document.querySelector("#app");
 
+const updateSatAPI = 6000; // How often to update location in MS
+
 // Moon Variables
 let theta = 0;
 let dTheta = 2 * Math.PI / 2000;
+
+// Station Variables
+let sLat = 0;
+let sLon = 0;
 
 scene = new THREE.Scene();
 
 // ================ CAMERA
 
-const fov = 50; // Field Of View In Degree
+const fov = 30; // Field Of View In Degree
 const aspect = window.innerWidth / window.innerHeight; // Getting Windows Aspect Ratio
 
 //Object Has To Be Within These Range
@@ -24,12 +30,10 @@ const near = 0.1;
 const far = 1000;
 
 camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-camera.position.z = 3;
-camera.position.x = 1.5;
+camera.position.z = 2;
 scene.add(camera);
 
 // ================ RENDER
-
 renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true
@@ -41,6 +45,16 @@ renderer.setClearColor(0x000000, 0.0);
 
 // ================ ORBIT CONTROLLER 
 const controls = new OrbitControls(camera, renderer.domElement);
+controls.minPolarAngle = Math.PI/2;
+controls.maxPolarAngle = Math.PI/2;
+controls.minDistance = 2.5;
+controls.maxDistance = 5;
+controls.enablePan = false;
+//controls.enableZoom = false;
+
+camera.position.x = 1;
+camera.position.z = 4;
+controls.update();
 
 // ================ SETUP EARTH
 
@@ -92,19 +106,32 @@ moonMesh.position.y = 0.13; // Setting Y Position Up From Earth
 
 // ================ SETUP STATION
 const loader = new GLTFLoader();
-loader.load("modes/ISS_stationary.glb", (stationMesh) => {
-    scene.add(stationMesh.scene);
-    stationMesh.position.y = 1;
-});
+let spaceStationObject;
+
+loader.load("models/ISS_stationary.glb", (gltf) => {
+    spaceStationObject = gltf.scene;
+    const pointLight2 = new THREE.PointLight(0xffffff, 0.3);
+
+    gltf.scene.add(pointLight2);
+    pointLight2.position.set(0,0,0);
+
+    gltf.scene.scale.set(0.0005,0.0005,0.0005);
+    gltf.scene.position.y = 0.7;
+    scene.add(gltf.scene);
+    },undefined,
+    (err) => {
+        console.error("Could not load asset " + err);
+    }
+);
 
 // ================ SETUP LIGHT SOURCE
 
 // Ambient Light
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(ambientLight);
 
 // Blue Ambient Light
-const ambientLight2 = new THREE.AmbientLight(0x0042FF, 0.2);
+const ambientLight2 = new THREE.AmbientLight(0x0042FF, 0.3);
 scene.add(ambientLight2);
 
 // Point Light
@@ -112,6 +139,8 @@ const pointLight = new THREE.PointLight(0xffffff, 1);
 pointLight.position.set(5, 3, 5);
 scene.add(pointLight);
 
+
+// ================ ANIMATE EVERYTHING
 const animate = () => {
     requestAnimationFrame(animate); // Run This Animation Each Frame
     earthMesh.rotation.y -= 0.0015; // Rotates Earth
@@ -119,15 +148,26 @@ const animate = () => {
     cloudMesh.rotation.y -= 0.001; // Roates Clouds Y Axist
     cloudMesh.rotation.x -= 0.0001; // Roates Clouds X Axist
     starMesh.rotation.y -= 0.0012; // Rotates Galaxy
-    moonMesh.rotation.y -= 0.001; // Rotates Moon
+    moonMesh.rotation.y -= 0.003; // Rotates Moon
 
     // Rotate Moon Around Earth
     theta += dTheta;
     moonMesh.position.x = 1 * Math.cos(theta);
     moonMesh.position.z = 1 * Math.sin(theta);
 
+    // Rotating The Station Around Earth
+    if(spaceStationObject != null) {
+        const satLatLonPoint = calcPosFromLatLonRad(sLat, sLon, 0.7);
+        spaceStationObject.position.set(satLatLonPoint[0], satLatLonPoint[1], satLatLonPoint[2]);
+        spaceStationObject.rotation.y += 0.002;
+    }
+    
     // Controller Movement Update
     controls.update();
+
+    // Update Light By Camera Control
+    //pointLight.position.copy(camera.position);
+
     render();
 }
 
@@ -136,8 +176,9 @@ const render = () => {
 }
 
 const latlons = [43.775982, -79.175377];
-addHomePoint(latlons)
+addHomePoint(latlons); // Adding Visitors Location
 animate(); // Animates & Renders
+getSatLongLat();
 
 // =========================================
 // ============== FUNCTIONS
@@ -158,7 +199,6 @@ function calcPosFromLatLonRad(lat,lon, radius){
 
 // Ads Visitors Location To The Map
 function addHomePoint(latlons){
-    console.log(latlons[0], latlons[1]);
     const pointGeometry = new THREE.SphereGeometry(0.01, 20, 20);
 
     const pointMaterial = new THREE.MeshPhongMaterial({ // Setting Up Earth Material
@@ -171,3 +211,21 @@ function addHomePoint(latlons){
     const latlonpoint = calcPosFromLatLonRad(latlons[0],latlons[1], 0.6);
     pointMesh.position.set(latlonpoint[0], latlonpoint[1], latlonpoint[2]);
 }
+
+function getSatLongLat () {
+    var timer = setInterval(() => {
+        const p = axios.get("http://api.open-notify.org/iss-now.json");
+        p.then(result => {
+            sLat = result.data.iss_position.latitude;
+            sLon = result.data.iss_position.longitude;
+        }).catch(error => {
+            console.log(error);
+        })
+    }, updateSatAPI);
+}
+
+document.addEventListener('keyup', event => {
+    if (event.code === 'Space') {
+        //camera.lookAt(spaceStationObject.position.x + 1, spaceStationObject.position.z, spaceStationObject.position.y);
+    }
+})
