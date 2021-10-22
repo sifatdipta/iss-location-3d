@@ -14,7 +14,7 @@ let cameraZ;
 
 // Moon Variables
 let theta = 0;
-let dTheta = 2 * Math.PI / 5000;
+let dTheta = 2 * Math.PI / 8000;
 
 // Station Variables
 let sLat = 0;
@@ -142,11 +142,11 @@ scene.add(pointLight);
 // ================ ANIMATE EVERYTHING
 const animate = () => {
     requestAnimationFrame(animate); // Run This Animation Each Frame
-    earthMesh.rotation.y -= 0.0015; // Rotates Earth
+    earthMesh.rotation.y -= 0.00015; // Rotates Earth
 
-    cloudMesh.rotation.y -= 0.001; // Roates Clouds Y Axist
-    cloudMesh.rotation.x -= 0.0001; // Roates Clouds X Axist
-    starMesh.rotation.y -= 0.0012; // Rotates Galaxy
+    cloudMesh.rotation.y -= 0.0001; // Roates Clouds Y Axist
+    cloudMesh.rotation.x -= 0.00001; // Roates Clouds X Axist
+    starMesh.rotation.y -= 0.0013; // Rotates Galaxy
     moonMesh.rotation.y -= 0.003; // Rotates Moon
 
     // Rotate Moon Around Earth
