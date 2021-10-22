@@ -151,12 +151,12 @@ const animate = () => {
 
     // Rotate Moon Around Earth
     theta += dTheta;
-    moonMesh.position.x = 1 * Math.cos(theta);
-    moonMesh.position.z = 1 * Math.sin(theta);
+    moonMesh.position.x = 1.3 * Math.cos(theta);
+    moonMesh.position.z = 1.3 * Math.sin(theta);
 
     // Rotating The Station Around Earth
     if(spaceStationObject != null) {
-        const satLatLonPoint = calcPosFromLatLonRad(sLat, sLon, 0.7);
+        const satLatLonPoint = calcPosFromLatLonRad(sLat, sLon, 0.75);
         const newPosition = new THREE.Vector3(satLatLonPoint[0], satLatLonPoint[1], satLatLonPoint[2]);
         spaceStationObject.position.lerp(newPosition, 0.1);
         spaceStationObject.rotation.y += 0.002;
@@ -181,8 +181,14 @@ const render = () => {
     renderer.render(scene, camera); // Renders The Scene & The Camera
 }
 
-const latlons = [43.775982, -79.175377];
-addHomePoint(latlons); // Adding Visitors Location
+// Get Users Lat Long
+returnUserLatLon();
+
+function handleAPIData() {
+    console.log(userLatLon);
+    addHomePoint(userLatLon); // Adding Visitors Location
+}
+
 animate(); // Animates & Renders
 getSatLongLat();
 
@@ -224,12 +230,31 @@ function getSatLongLat () {
         p.then(result => {
             sLat = result.data.iss_position.latitude;
             sLon = result.data.iss_position.longitude;
+            displayISS(result.data.iss_position.latitude, result.data.iss_position.longitude)
         }).catch(error => {
             console.log(error);
         })
     }, updateSatAPI);
 }
 
+// Gets User Ip -> Returns Lat Long
+let userLatLon = [];
+
+function returnUserLatLon(){
+    axios
+    .get('http://ip-api.com/json/')
+    .then((result)=>{
+        //console.log(result.data.lat);
+        userLatLon = [result.data.lat, result.data.lon];
+        handleAPIData();
+    })
+
+    .catch((error) => {
+        console.log(error);
+    });
+}
+
+// Event Listener
 document.addEventListener('keyup', event => {
     if (event.code === 'Space') {
         if(zoomIntoStation) { // TURNING ZOOM IN TO SATELITE OFF

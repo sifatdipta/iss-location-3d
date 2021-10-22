@@ -4,13 +4,33 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internation Space Station</title>
+    <title>Internation Space Station - Welcome</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-    <canvas id="app"></canvas>
+    <div class="container">
+        <canvas id="app"></canvas>
+        <div class="overlay" style="pointer-events: none">
+            <section class="page">
+                <div class="page__left">
+                    <h1 class="page__title">International Space Station</h1>
+                    <h3 class="page__date">Current Date and Time</h3>
+                </div>
+                <div class="page__right">
+                    <h2 class="page__location page__loc-text">Country: Placeholder</h2>
+                    <h2 id="lat" class="page__coordinates page__loc-text">Latitude: ##.#####</h2>
+                    <h2 id="lon" class="page__coordinates page__loc-text">Longitude: ##.#####</h2>
+                    <a class="btn" target="_blank" style="pointer-events: auto" href="https://www.nasa.gov/mission_pages/station/main/index.html">Learn more about the I.S.S. ➔</a>
+                </div>
+            </section>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="api.js"></script>
     <script type="module" src="client.js"></script>
 </body>
 </html>

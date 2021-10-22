@@ -1,6 +1,112 @@
+@import url("https://fonts.googleapis.com/css2?family=Audiowide&display=swap");
+* {
+  margin: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
 body {
+  font-family: 'Audiowide', cursive;
   margin: 0;
   overflow: hidden;
   /* Hide scrollbars */
+  color: white;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.overlay {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 1800px;
+  height: 100vh;
+  top: 0%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+
+.page {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.page__left {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+
+.page__right {
+  width: 500px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-line-pack: end;
+      align-content: flex-end;
+  gap: 20px;
+}
+
+.page__title {
+  font-size: 64px;
+  width: 400px;
+  text-transform: uppercase;
+}
+
+.page__date {
+  font-size: 24px;
+  padding: 14px 0;
+}
+
+.page__text {
+  font-size: 24px;
+}
+
+.btn {
+  width: 300px;
+  text-align: center;
+  color: white;
+  text-decoration: none;
+  background-color: black;
+  border: 2px solid white;
+  font-size: 14px;
+  text-transform: capitalize;
+  padding: 10px 30px;
+  border-radius: 20px;
+  margin-top: 30px .btn;
+}
+
+.btn :hover {
+  cursor: pointer;
+  -webkit-box-shadow: 2px 2px 6px white, -2px -2px 6px white;
+          box-shadow: 2px 2px 6px white, -2px -2px 6px white;
 }
 /*# sourceMappingURL=main.css.map */
