@@ -142,7 +142,7 @@ scene.add(pointLight);
 // ================ ANIMATE EVERYTHING
 const animate = () => {
     requestAnimationFrame(animate); // Run This Animation Each Frame
-    earthMesh.rotation.y -= 0.00015; // Rotates Earth
+    //earthMesh.rotation.y -= 0.00015; // Rotates Earth
 
     cloudMesh.rotation.y -= 0.0001; // Roates Clouds Y Axist
     cloudMesh.rotation.x -= 0.00001; // Roates Clouds X Axist
